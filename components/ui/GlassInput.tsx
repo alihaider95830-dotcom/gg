@@ -10,6 +10,7 @@ interface GlassInputProps {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
   className?: string
   icon?: React.ReactNode
+  readOnly?: boolean
 }
 
 export function GlassInput({
@@ -19,6 +20,7 @@ export function GlassInput({
   onChange,
   className,
   icon,
+  readOnly = false,
 }: GlassInputProps) {
   return (
     <motion.div
@@ -28,7 +30,7 @@ export function GlassInput({
       transition={{ duration: 0.3 }}
     >
       {icon && (
-        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50">
+        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">
           {icon}
         </div>
       )}
@@ -37,6 +39,7 @@ export function GlassInput({
         placeholder={placeholder}
         value={value}
         onChange={onChange}
+        readOnly={readOnly}
         className={clsx(
           'glass-input w-full',
           icon && 'pl-12',

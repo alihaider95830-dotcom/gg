@@ -16,6 +16,8 @@ export interface SlideFile {
   uploadedAt: Date
   thumbnail?: string
   tags: string[]
+  downloadURL?: string
+  storagePath?: string
 }
 
 export interface DownloadHistory {

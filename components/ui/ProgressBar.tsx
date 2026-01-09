@@ -21,7 +21,7 @@ export function ProgressBar({ progress, className, showPercentage = false }: Pro
         />
       </div>
       {showPercentage && (
-        <div className="text-white/70 text-sm mt-1 text-right">
+        <div className="text-gray-600 text-sm mt-1 text-right">
           {Math.round(progress)}%
         </div>
       )}

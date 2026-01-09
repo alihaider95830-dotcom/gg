@@ -15,7 +15,7 @@ export function ThemeToggle() {
       whileTap={{ scale: 0.9 }}
     >
       {theme === 'light' ? (
-        <Moon className="w-6 h-6 text-white" />
+        <Moon className="w-6 h-6 text-gray-800" />
       ) : (
         <Sun className="w-6 h-6 text-yellow-300" />
       )}

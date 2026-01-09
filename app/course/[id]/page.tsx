@@ -190,7 +190,7 @@ export default function CoursePage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <GlassCard>
-          <p className="text-white text-xl">Course not found</p>
+          <p className="text-gray-800 text-xl">Course not found</p>
           <GlassButton onClick={() => router.push('/')} className="mt-4">
             Go Back
           </GlassButton>
@@ -216,11 +216,11 @@ export default function CoursePage() {
           <div
             className={`h-48 rounded-2xl bg-gradient-to-br ${course.color} flex items-center justify-center mb-6`}
           >
-            <FileText className="w-24 h-24 text-white/80" />
+            <FileText className="w-24 h-24 text-gray-700" />
           </div>
-          <h1 className="text-4xl font-bold text-white mb-2">{course.name}</h1>
-          <p className="text-white/60 text-lg mb-4">{course.description}</p>
-          <div className="flex gap-4 text-white/80">
+          <h1 className="text-4xl font-bold text-gray-800 mb-2">{course.name}</h1>
+          <p className="text-gray-600 text-lg mb-4">{course.description}</p>
+          <div className="flex gap-4 text-gray-700">
             <span>{course.fileCount} files</span>
             <span>•</span>
             <span>
@@ -263,7 +263,7 @@ export default function CoursePage() {
             animate={{ opacity: 1, y: 0 }}
             className="glass rounded-2xl p-4 mb-6 flex items-center gap-4"
           >
-            <span className="text-white font-semibold">
+            <span className="text-gray-800 font-semibold">
               {selectedFiles.size} file(s) selected
             </span>
             <div className="flex gap-2 ml-auto">
@@ -286,7 +286,7 @@ export default function CoursePage() {
         {filteredFiles.length > 0 && (
           <motion.button
             onClick={handleSelectAll}
-            className="glass rounded-xl px-4 py-2 mb-4 flex items-center gap-2 text-white hover:bg-white/20 transition-all"
+            className="glass rounded-xl px-4 py-2 mb-4 flex items-center gap-2 text-gray-800 hover:bg-white/20 transition-all"
             whileHover={{ scale: 1.02 }}
           >
             {selectedFiles.size === filteredFiles.length ? (

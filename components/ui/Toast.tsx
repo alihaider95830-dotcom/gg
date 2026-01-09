@@ -41,10 +41,10 @@ export function Toast({ message, type, isVisible, onClose, duration = 3000 }: To
         >
           <div className="glass rounded-2xl p-4 flex items-center gap-3 min-w-[300px]">
             {icons[type]}
-            <p className="text-white font-medium flex-1">{message}</p>
+            <p className="text-gray-800 font-medium flex-1">{message}</p>
             <button
               onClick={onClose}
-              className="text-white/50 hover:text-white transition-colors"
+              className="text-gray-500 hover:text-gray-800 transition-colors"
             >
               ×
             </button>

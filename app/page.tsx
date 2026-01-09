@@ -108,10 +108,10 @@ export default function Dashboard() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-2">
               Course Slides Manager
             </h1>
-            <p className="text-white/60 text-lg">
+            <p className="text-gray-600 text-lg">
               Upload, organize, and download your presentation slides
             </p>
           </motion.div>
@@ -125,8 +125,8 @@ export default function Dashboard() {
               <FolderOpen className="w-8 h-8 text-blue-400" />
             </div>
             <div>
-              <p className="text-white/60 text-sm">Total Courses</p>
-              <p className="text-3xl font-bold text-white">{stats.courseCount}</p>
+              <p className="text-gray-600 text-sm">Total Courses</p>
+              <p className="text-3xl font-bold text-gray-800">{stats.courseCount}</p>
             </div>
           </GlassCard>
 
@@ -135,8 +135,8 @@ export default function Dashboard() {
               <FileText className="w-8 h-8 text-purple-400" />
             </div>
             <div>
-              <p className="text-white/60 text-sm">Total Files</p>
-              <p className="text-3xl font-bold text-white">{stats.fileCount}</p>
+              <p className="text-gray-600 text-sm">Total Files</p>
+              <p className="text-3xl font-bold text-gray-800">{stats.fileCount}</p>
             </div>
           </GlassCard>
 
@@ -145,8 +145,8 @@ export default function Dashboard() {
               <HardDrive className="w-8 h-8 text-green-400" />
             </div>
             <div>
-              <p className="text-white/60 text-sm">Storage Used</p>
-              <p className="text-3xl font-bold text-white">
+              <p className="text-gray-600 text-sm">Storage Used</p>
+              <p className="text-3xl font-bold text-gray-800">
                 {formatFileSize(stats.totalSize)}
               </p>
             </div>
@@ -157,8 +157,8 @@ export default function Dashboard() {
               <TrendingUp className="w-8 h-8 text-orange-400" />
             </div>
             <div>
-              <p className="text-white/60 text-sm">Avg File Size</p>
-              <p className="text-3xl font-bold text-white">
+              <p className="text-gray-600 text-sm">Avg File Size</p>
+              <p className="text-3xl font-bold text-gray-800">
                 {formatFileSize(stats.averageFileSize)}
               </p>
             </div>
@@ -224,7 +224,7 @@ export default function Dashboard() {
       >
         <div className="space-y-4">
           <div>
-            <label className="text-white/80 text-sm mb-2 block">Course Name</label>
+            <label className="text-gray-700 text-sm mb-2 block">Course Name</label>
             <GlassInput
               type="text"
               placeholder="e.g., Data Structures & Algorithms"
@@ -233,7 +233,7 @@ export default function Dashboard() {
             />
           </div>
           <div>
-            <label className="text-white/80 text-sm mb-2 block">Description</label>
+            <label className="text-gray-700 text-sm mb-2 block">Description</label>
             <GlassInput
               type="text"
               placeholder="Brief description of the course"

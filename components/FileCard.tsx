@@ -1,10 +1,11 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { FileText, Download, Trash2, Calendar, HardDrive } from 'lucide-react'
+import { FileText, Download, Trash2, Calendar, HardDrive, Cloud } from 'lucide-react'
 import { SlideFile } from '@/types'
 import { formatFileSize } from '@/lib/utils'
 import { format } from 'date-fns'
+import { ShareButton } from './ShareButton'
 
 interface FileCardProps {
   file: SlideFile
@@ -49,13 +50,13 @@ export function FileCard({
         className="h-32 rounded-xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center mb-4 cursor-pointer"
         onClick={() => onPreview?.(file.id)}
       >
-        <FileText className="w-12 h-12 text-white/50" />
+        <FileText className="w-12 h-12 text-gray-500" />
       </div>
 
       {/* File Info */}
-      <h4 className="text-white font-semibold truncate mb-2">{file.name}</h4>
+      <h4 className="text-gray-800 font-semibold truncate mb-2">{file.name}</h4>
 
-      <div className="space-y-2 text-sm text-white/60 mb-4">
+      <div className="space-y-2 text-sm text-gray-600 mb-4">
         <div className="flex items-center gap-2">
           <HardDrive className="w-4 h-4" />
           <span>{formatFileSize(file.size)}</span>
@@ -72,11 +73,19 @@ export function FileCard({
           {file.tags.map(tag => (
             <span
               key={tag}
-              className="glass rounded-full px-3 py-1 text-xs text-white/70"
+              className="glass rounded-full px-3 py-1 text-xs text-gray-600"
             >
               {tag}
             </span>
           ))}
+        </div>
+      )}
+
+      {/* Cloud Indicator */}
+      {file.downloadURL && (
+        <div className="flex items-center gap-1 text-blue-400 text-xs mb-3">
+          <Cloud className="w-3 h-3" />
+          <span>Synced to cloud</span>
         </div>
       )}
 
@@ -93,6 +102,7 @@ export function FileCard({
             <span className="text-xs font-semibold">Download</span>
           </motion.button>
         )}
+        {file.downloadURL && <ShareButton fileId={file.id} fileName={file.name} />}
         {onDelete && (
           <motion.button
             onClick={() => {

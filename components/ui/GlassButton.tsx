@@ -30,9 +30,9 @@ export function GlassButton({
   }
 
   const variantClasses = {
-    primary: 'bg-blue-500/20 hover:bg-blue-500/30 text-white border-blue-400/30',
-    secondary: 'bg-purple-500/20 hover:bg-purple-500/30 text-white border-purple-400/30',
-    danger: 'bg-red-500/20 hover:bg-red-500/30 text-white border-red-400/30',
+    primary: 'bg-blue-500/20 hover:bg-blue-500/30 text-gray-800 border-blue-400/30',
+    secondary: 'bg-purple-500/20 hover:bg-purple-500/30 text-gray-800 border-purple-400/30',
+    danger: 'bg-red-500/20 hover:bg-red-500/30 text-gray-800 border-red-400/30',
   }
 
   return (

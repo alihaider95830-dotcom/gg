@@ -25,15 +25,15 @@ export function CourseCard({ course, onDelete }: CourseCardProps) {
           <div
             className={`h-32 rounded-2xl bg-gradient-to-br ${course.color} flex items-center justify-center mb-4`}
           >
-            <FolderOpen className="w-16 h-16 text-white/80" />
+            <FolderOpen className="w-16 h-16 text-gray-700" />
           </div>
 
           {/* Course Info */}
           <div>
-            <h3 className="text-2xl font-bold text-white mb-2 truncate">
+            <h3 className="text-2xl font-bold text-gray-800 mb-2 truncate">
               {course.name}
             </h3>
-            <p className="text-white/60 text-sm line-clamp-2 mb-4">
+            <p className="text-gray-600 text-sm line-clamp-2 mb-4">
               {course.description}
             </p>
           </div>
@@ -41,18 +41,18 @@ export function CourseCard({ course, onDelete }: CourseCardProps) {
           {/* Stats */}
           <div className="grid grid-cols-2 gap-3">
             <div className="glass rounded-xl p-3">
-              <div className="flex items-center gap-2 text-white/60 mb-1">
+              <div className="flex items-center gap-2 text-gray-600 mb-1">
                 <FileText className="w-4 h-4" />
                 <span className="text-xs">Files</span>
               </div>
-              <p className="text-xl font-bold text-white">{course.fileCount}</p>
+              <p className="text-xl font-bold text-gray-800">{course.fileCount}</p>
             </div>
             <div className="glass rounded-xl p-3">
-              <div className="flex items-center gap-2 text-white/60 mb-1">
+              <div className="flex items-center gap-2 text-gray-600 mb-1">
                 <HardDrive className="w-4 h-4" />
                 <span className="text-xs">Size</span>
               </div>
-              <p className="text-xl font-bold text-white">
+              <p className="text-xl font-bold text-gray-800">
                 {formatFileSize(course.totalSize)}
               </p>
             </div>

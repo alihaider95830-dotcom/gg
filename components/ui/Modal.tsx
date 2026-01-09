@@ -33,13 +33,13 @@ export function Modal({ isOpen, onClose, children, title }: ModalProps) {
             >
               <div className="flex items-center justify-between p-6 border-b border-white/10">
                 {title && (
-                  <h2 className="text-2xl font-bold text-white">{title}</h2>
+                  <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
                 )}
                 <button
                   onClick={onClose}
                   className="ml-auto glass rounded-xl p-2 hover:bg-white/20 transition-all"
                 >
-                  <X className="w-6 h-6 text-white" />
+                  <X className="w-6 h-6 text-gray-800" />
                 </button>
               </div>
               <div className="p-6 overflow-y-auto custom-scrollbar max-h-[calc(90vh-100px)]">
