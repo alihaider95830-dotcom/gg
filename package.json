@@ -1,12 +1,24 @@
 {
   "name": "course-slides-manager",
   "version": "1.0.0",
+  "description": "A modern web application for managing course presentation slides with glassmorphism UI",
   "private": true,
+  "author": "Your Name",
+  "license": "MIT",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "lint:fix": "next lint --fix",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf .next node_modules",
+    "reinstall": "npm run clean && npm install",
+    "preview": "next build && next start"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
   },
   "dependencies": {
     "react": "^18.3.1",

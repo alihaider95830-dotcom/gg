@@ -132,6 +132,40 @@ Modify `app/globals.css` for custom animations:
 }
 ```
 
+## 🚀 Deployment
+
+### Deploy to Vercel (Recommended)
+
+The easiest way to deploy this application is using [Vercel](https://vercel.com):
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/your-username/your-repo)
+
+#### Quick Steps:
+1. Push your code to GitHub
+2. Visit [vercel.com](https://vercel.com) and sign in
+3. Click "Add New Project"
+4. Import your GitHub repository
+5. Click "Deploy" (Vercel auto-detects Next.js settings)
+6. Your app will be live in ~2 minutes!
+
+For detailed deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md)
+
+### Alternative Deployment Platforms
+
+- **Netlify**: Supports Next.js with automatic deployments
+- **Railway**: Easy deployment with built-in database options
+- **DigitalOcean App Platform**: Full control with managed infrastructure
+- **AWS Amplify**: Enterprise-grade hosting and scaling
+
+### Environment Variables
+
+Copy `.env.example` to `.env.local` for local development:
+```bash
+cp .env.example .env.local
+```
+
+No environment variables are required for the current version (uses localStorage).
+
 ## 🚧 Future Enhancements
 
 - [ ] Cloud storage integration

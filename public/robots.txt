@@ -1,0 +1,9 @@
+# robots.txt for Course Slides Manager
+
+User-agent: *
+Allow: /
+
+# Disallow private or sensitive routes (if any in future)
+# Disallow: /api/
+
+Sitemap: https://your-domain.com/sitemap.xml
