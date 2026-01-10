@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { Plus, FolderOpen, FileText, HardDrive, TrendingUp } from 'lucide-react'
 import { GlassCard } from '@/components/ui/GlassCard'
@@ -38,24 +38,28 @@ export default function Dashboard() {
     type: 'info',
   })
 
-  useEffect(() => {
-    loadCourses()
-    loadStats()
+  const loadStats = useCallback(() => {
+    const storageStats = getStorageStats()
+    setStats(storageStats)
   }, [])
 
-  const loadCourses = () => {
+  const loadCourses = useCallback(() => {
     setIsLoading(true)
     setTimeout(() => {
       const loadedCourses = getCourses()
       setCourses(loadedCourses)
       setIsLoading(false)
     }, 500)
-  }
+  }, [])
 
-  const loadStats = () => {
-    const storageStats = getStorageStats()
-    setStats(storageStats)
-  }
+  useEffect(() => {
+    loadCourses()
+    loadStats()
+  }, [loadCourses, loadStats])
+
+  const showToast = useCallback((message: string, type: ToastType) => {
+    setToast({ isVisible: true, message, type })
+  }, [])
 
   const handleCreateCourse = () => {
     if (!newCourseName.trim()) {
@@ -87,16 +91,14 @@ export default function Dashboard() {
     loadStats()
   }
 
-  const handleDeleteCourse = (courseId: string) => {
+  // Memoize handleDeleteCourse to prevent unnecessary re-renders of CourseCard components
+  // usage of functional state update (prev => ...) removes 'courses' dependency
+  const handleDeleteCourse = useCallback((courseId: string) => {
     deleteCourse(courseId)
-    setCourses(courses.filter(c => c.id !== courseId))
+    setCourses(prev => prev.filter(c => c.id !== courseId))
     showToast('Course deleted successfully', 'success')
     loadStats()
-  }
-
-  const showToast = (message: string, type: ToastType) => {
-    setToast({ isVisible: true, message, type })
-  }
+  }, [showToast, loadStats])
 
   return (
     <div className="min-h-screen p-6 md:p-8 lg:p-12">
