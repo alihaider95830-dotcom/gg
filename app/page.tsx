@@ -45,11 +45,10 @@ export default function Dashboard() {
 
   const loadCourses = () => {
     setIsLoading(true)
-    setTimeout(() => {
-      const loadedCourses = getCourses()
-      setCourses(loadedCourses)
-      setIsLoading(false)
-    }, 500)
+    // Optimization: Removed artificial 500ms delay to improve initial load performance
+    const loadedCourses = getCourses()
+    setCourses(loadedCourses)
+    setIsLoading(false)
   }
 
   const loadStats = () => {
