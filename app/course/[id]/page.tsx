@@ -70,11 +70,9 @@ export default function CoursePage() {
 
   const loadFiles = () => {
     setIsLoading(true)
-    setTimeout(() => {
-      const courseFiles = getFilesByCourse(courseId)
-      setFiles(courseFiles)
-      setIsLoading(false)
-    }, 500)
+    const courseFiles = getFilesByCourse(courseId)
+    setFiles(courseFiles)
+    setIsLoading(false)
   }
 
   const filterAndSortFiles = () => {

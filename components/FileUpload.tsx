@@ -78,10 +78,8 @@ export function FileUpload({ courseId, onUploadComplete, maxFiles = 100 }: FileU
           files.push(fileData)
           localStorage.setItem('files', JSON.stringify(files))
 
-          // Call onUploadComplete after a short delay
-          setTimeout(() => {
-            onUploadComplete()
-          }, 500)
+          // Call onUploadComplete immediately
+          onUploadComplete()
         }
         reader.readAsDataURL(file)
       } else {
