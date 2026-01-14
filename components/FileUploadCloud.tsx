@@ -100,10 +100,8 @@ export function FileUploadCloud({ courseId, onUploadComplete, maxFiles = 100 }: 
 
     setIsUploading(false)
 
-    // Call onUploadComplete after a short delay
-    setTimeout(() => {
-      onUploadComplete()
-    }, 500)
+    // Call onUploadComplete immediately
+    onUploadComplete()
   }, [courseId, maxFiles, onUploadComplete])
 
   const removeFromQueue = (fileId: string) => {
