@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import {
@@ -8,11 +8,10 @@ import {
   Upload,
   Download,
   Search,
-  Filter,
-  Trash2,
   FileText,
   CheckSquare,
   Square,
+  Trash2,
 } from 'lucide-react'
 import { GlassCard } from '@/components/ui/GlassCard'
 import { GlassButton } from '@/components/ui/GlassButton'
@@ -51,33 +50,36 @@ export default function CoursePage() {
     type: 'info',
   })
 
-  useEffect(() => {
-    loadCourse()
-    loadFiles()
-  }, [courseId])
+  // Memoized helpers
+  const showToast = useCallback((message: string, type: ToastType) => {
+    setToast({ isVisible: true, message, type })
+  }, [])
 
-  useEffect(() => {
-    filterAndSortFiles()
-  }, [files, searchQuery, sortBy])
-
-  const loadCourse = () => {
+  const loadCourse = useCallback(() => {
     const courses = getCourses()
     const foundCourse = courses.find(c => c.id === courseId)
     if (foundCourse) {
       setCourse(foundCourse)
     }
-  }
+  }, [courseId])
 
-  const loadFiles = () => {
+  const loadFiles = useCallback(() => {
     setIsLoading(true)
     setTimeout(() => {
       const courseFiles = getFilesByCourse(courseId)
       setFiles(courseFiles)
       setIsLoading(false)
     }, 500)
-  }
+  }, [courseId])
 
-  const filterAndSortFiles = () => {
+  // Initial load
+  useEffect(() => {
+    loadCourse()
+    loadFiles()
+  }, [courseId, loadCourse, loadFiles])
+
+  // Filter and sort
+  useEffect(() => {
     let filtered = [...files]
 
     // Apply search filter
@@ -102,24 +104,27 @@ export default function CoursePage() {
     })
 
     setFilteredFiles(filtered)
-  }
+  }, [files, searchQuery, sortBy])
 
-  const handleUploadComplete = () => {
+  const handleUploadComplete = useCallback(() => {
     loadFiles()
     loadCourse()
     setIsUploadModalOpen(false)
     showToast('Files uploaded successfully', 'success')
-  }
+  }, [loadFiles, loadCourse, showToast])
 
-  const handleFileSelect = (fileId: string) => {
-    const newSelected = new Set(selectedFiles)
-    if (newSelected.has(fileId)) {
-      newSelected.delete(fileId)
-    } else {
-      newSelected.add(fileId)
-    }
-    setSelectedFiles(newSelected)
-  }
+  // Optimized: Uses functional update to avoid dependency on selectedFiles
+  const handleFileSelect = useCallback((fileId: string) => {
+    setSelectedFiles(prev => {
+      const newSelected = new Set(prev)
+      if (newSelected.has(fileId)) {
+        newSelected.delete(fileId)
+      } else {
+        newSelected.add(fileId)
+      }
+      return newSelected
+    })
+  }, [])
 
   const handleSelectAll = () => {
     if (selectedFiles.size === filteredFiles.length) {
@@ -129,13 +134,13 @@ export default function CoursePage() {
     }
   }
 
-  const handleDownloadFile = (fileId: string) => {
+  const handleDownloadFile = useCallback((fileId: string) => {
     const file = files.find(f => f.id === fileId)
     if (file) {
       showToast(`Downloading ${file.name}`, 'info')
       // In a real implementation, this would trigger an actual download
     }
-  }
+  }, [files, showToast])
 
   const handleDownloadSelected = async () => {
     if (selectedFiles.size === 0) return
@@ -163,12 +168,14 @@ export default function CoursePage() {
     }
   }
 
-  const handleDeleteFile = (fileId: string) => {
+  // Optimized: Uses functional update for setFiles to avoid full files dependency if possible,
+  // but here we just depend on loadCourse and showToast.
+  const handleDeleteFile = useCallback((fileId: string) => {
     deleteFile(fileId)
-    setFiles(files.filter(f => f.id !== fileId))
+    setFiles(prev => prev.filter(f => f.id !== fileId))
     loadCourse()
     showToast('File deleted successfully', 'success')
-  }
+  }, [loadCourse, showToast])
 
   const handleDeleteSelected = () => {
     if (selectedFiles.size === 0) return
@@ -180,10 +187,6 @@ export default function CoursePage() {
       loadCourse()
       showToast(`Deleted ${selectedFiles.size} file(s)`, 'success')
     }
-  }
-
-  const showToast = (message: string, type: ToastType) => {
-    setToast({ isVisible: true, message, type })
   }
 
   if (!course) {
