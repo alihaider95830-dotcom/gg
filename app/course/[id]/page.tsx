@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import {
@@ -35,7 +35,6 @@ export default function CoursePage() {
 
   const [course, setCourse] = useState<Course | null>(null)
   const [files, setFiles] = useState<SlideFile[]>([])
-  const [filteredFiles, setFilteredFiles] = useState<SlideFile[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
@@ -56,10 +55,6 @@ export default function CoursePage() {
     loadFiles()
   }, [courseId])
 
-  useEffect(() => {
-    filterAndSortFiles()
-  }, [files, searchQuery, sortBy])
-
   const loadCourse = () => {
     const courses = getCourses()
     const foundCourse = courses.find(c => c.id === courseId)
@@ -77,18 +72,20 @@ export default function CoursePage() {
     }, 500)
   }
 
-  const filterAndSortFiles = () => {
-    let filtered = [...files]
+  // Optimize: Use useMemo for filtered/sorted files to prevent unnecessary re-renders
+  // Previously, this was a useEffect that set state, causing an extra render cycle
+  const filteredFiles = useMemo(() => {
+    let result = [...files]
 
     // Apply search filter
     if (searchQuery) {
-      filtered = filtered.filter(file =>
+      result = result.filter(file =>
         file.name.toLowerCase().includes(searchQuery.toLowerCase())
       )
     }
 
     // Apply sorting
-    filtered.sort((a, b) => {
+    result.sort((a, b) => {
       switch (sortBy) {
         case 'name':
           return a.name.localeCompare(b.name)
@@ -101,8 +98,8 @@ export default function CoursePage() {
       }
     })
 
-    setFilteredFiles(filtered)
-  }
+    return result
+  }, [files, searchQuery, sortBy])
 
   const handleUploadComplete = () => {
     loadFiles()
