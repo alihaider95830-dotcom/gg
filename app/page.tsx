@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { Plus, FolderOpen, FileText, HardDrive, TrendingUp } from 'lucide-react'
 import { GlassCard } from '@/components/ui/GlassCard'
@@ -38,10 +38,16 @@ export default function Dashboard() {
     type: 'info',
   })
 
+  // Memoize loadStats to allow its use in other memoized callbacks
+  const loadStats = useCallback(() => {
+    const storageStats = getStorageStats()
+    setStats(storageStats)
+  }, [])
+
   useEffect(() => {
     loadCourses()
     loadStats()
-  }, [])
+  }, [loadStats])
 
   const loadCourses = () => {
     setIsLoading(true)
@@ -50,11 +56,6 @@ export default function Dashboard() {
       setCourses(loadedCourses)
       setIsLoading(false)
     }, 500)
-  }
-
-  const loadStats = () => {
-    const storageStats = getStorageStats()
-    setStats(storageStats)
   }
 
   const handleCreateCourse = () => {
@@ -87,12 +88,14 @@ export default function Dashboard() {
     loadStats()
   }
 
-  const handleDeleteCourse = (courseId: string) => {
+  // Memoized to prevent re-renders of CourseCard components
+  const handleDeleteCourse = useCallback((courseId: string) => {
     deleteCourse(courseId)
-    setCourses(courses.filter(c => c.id !== courseId))
-    showToast('Course deleted successfully', 'success')
+    // Use functional update to avoid 'courses' dependency
+    setCourses(prev => prev.filter(c => c.id !== courseId))
+    setToast({ isVisible: true, message: 'Course deleted successfully', type: 'success' })
     loadStats()
-  }
+  }, [loadStats])
 
   const showToast = (message: string, type: ToastType) => {
     setToast({ isVisible: true, message, type })
