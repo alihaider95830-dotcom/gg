@@ -1,0 +1,23 @@
+
+> course-slides-manager@1.0.0 dev
+> next dev
+
+  ▲ Next.js 14.2.35
+  - Local:        http://localhost:3000
+
+ ✓ Starting...
+ ✓ Ready in 3.1s
+ ○ Compiling / ...
+ ✓ Compiled / in 10.8s (1282 modules)
+ GET / 200 in 11803ms
+ ✓ Compiled in 1014ms (648 modules)
+ GET / 200 in 49ms
+ GET / 200 in 41ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 597ms (1271 modules)
+ GET /_next/static/css/app/layout.css?v=1769021251103 404 in 792ms
+ GET /_next/static/chunks/webpack.js?v=1769021251103 404 in 800ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 784ms
+ GET /_next/static/chunks/main-app.js?v=1769021251103 404 in 796ms
+ GET /_next/static/chunks/app/page.js 404 in 784ms
+ GET /_next/static/chunks/app/layout.js 404 in 784ms
