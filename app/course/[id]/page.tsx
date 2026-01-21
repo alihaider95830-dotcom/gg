@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import {
@@ -35,7 +35,8 @@ export default function CoursePage() {
 
   const [course, setCourse] = useState<Course | null>(null)
   const [files, setFiles] = useState<SlideFile[]>([])
-  const [filteredFiles, setFilteredFiles] = useState<SlideFile[]>([])
+  // OPTIMIZATION: Use useMemo for derived state to avoid double renders
+  // const [filteredFiles, setFilteredFiles] = useState<SlideFile[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
@@ -56,28 +57,9 @@ export default function CoursePage() {
     loadFiles()
   }, [courseId])
 
-  useEffect(() => {
-    filterAndSortFiles()
-  }, [files, searchQuery, sortBy])
-
-  const loadCourse = () => {
-    const courses = getCourses()
-    const foundCourse = courses.find(c => c.id === courseId)
-    if (foundCourse) {
-      setCourse(foundCourse)
-    }
-  }
-
-  const loadFiles = () => {
-    setIsLoading(true)
-    setTimeout(() => {
-      const courseFiles = getFilesByCourse(courseId)
-      setFiles(courseFiles)
-      setIsLoading(false)
-    }, 500)
-  }
-
-  const filterAndSortFiles = () => {
+  // OPTIMIZATION: Removed useEffect and useState for filtering/sorting
+  // This prevents an extra render cycle every time filter criteria changes
+  const filteredFiles = useMemo(() => {
     let filtered = [...files]
 
     // Apply search filter
@@ -101,7 +83,24 @@ export default function CoursePage() {
       }
     })
 
-    setFilteredFiles(filtered)
+    return filtered
+  }, [files, searchQuery, sortBy])
+
+  const loadCourse = () => {
+    const courses = getCourses()
+    const foundCourse = courses.find(c => c.id === courseId)
+    if (foundCourse) {
+      setCourse(foundCourse)
+    }
+  }
+
+  const loadFiles = () => {
+    setIsLoading(true)
+    setTimeout(() => {
+      const courseFiles = getFilesByCourse(courseId)
+      setFiles(courseFiles)
+      setIsLoading(false)
+    }, 500)
   }
 
   const handleUploadComplete = () => {
