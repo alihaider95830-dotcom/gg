@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAG Chatbot - SQuAD Q&A</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤖 RAG Chatbot</h1>
+            <p class="subtitle">Ask questions about the SQuAD dataset</p>
+            <div class="header-actions">
+                <button id="statsBtn" class="btn btn-secondary">📊 Stats</button>
+                <button id="clearBtn" class="btn btn-secondary">🗑️ Clear</button>
+            </div>
+        </header>
+
+        <div class="chat-container" id="chatContainer">
+            <div class="welcome-message">
+                <h2>Welcome! 👋</h2>
+                <p>Ask me anything from the SQuAD dataset. I'll retrieve relevant context and provide accurate answers.</p>
+                <div class="example-queries">
+                    <p><strong>Try asking:</strong></p>
+                    <ul>
+                        <li>"What is the capital of France?"</li>
+                        <li>"Who invented the telephone?"</li>
+                        <li>"When did World War II end?"</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="input-container">
+            <form id="queryForm">
+                <input
+                    type="text"
+                    id="queryInput"
+                    placeholder="Ask a question..."
+                    autocomplete="off"
+                    required
+                >
+                <button type="submit" id="submitBtn" class="btn btn-primary">
+                    Send
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Stats Modal -->
+    <div id="statsModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>System Statistics</h2>
+            <div id="statsContent">
+                <div class="loading">Loading...</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+</body>
+</html>
