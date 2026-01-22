@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import {
@@ -51,75 +51,93 @@ export default function CoursePage() {
     type: 'info',
   })
 
-  useEffect(() => {
-    loadCourse()
-    loadFiles()
-  }, [courseId])
-
-  useEffect(() => {
-    filterAndSortFiles()
-  }, [files, searchQuery, sortBy])
-
-  const loadCourse = () => {
+  // ⚡ Performance Optimization:
+  // Memoize data loading functions to prevent them from breaking the stability
+  // of other callbacks that depend on them.
+  const loadCourse = useCallback(() => {
     const courses = getCourses()
     const foundCourse = courses.find(c => c.id === courseId)
     if (foundCourse) {
       setCourse(foundCourse)
     }
-  }
+  }, [courseId])
 
-  const loadFiles = () => {
+  const loadFiles = useCallback(() => {
     setIsLoading(true)
     setTimeout(() => {
       const courseFiles = getFilesByCourse(courseId)
       setFiles(courseFiles)
       setIsLoading(false)
     }, 500)
-  }
+  }, [courseId])
 
-  const filterAndSortFiles = () => {
-    let filtered = [...files]
+  useEffect(() => {
+    loadCourse()
+    loadFiles()
+  }, [courseId, loadCourse, loadFiles])
 
-    // Apply search filter
-    if (searchQuery) {
-      filtered = filtered.filter(file =>
-        file.name.toLowerCase().includes(searchQuery.toLowerCase())
-      )
+  useEffect(() => {
+    // Moved inside useEffect to resolve dependency warning while keeping logic self-contained
+    const filterAndSortFiles = () => {
+      let filtered = [...files]
+
+      // Apply search filter
+      if (searchQuery) {
+        filtered = filtered.filter(file =>
+          file.name.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      }
+
+      // Apply sorting
+      filtered.sort((a, b) => {
+        switch (sortBy) {
+          case 'name':
+            return a.name.localeCompare(b.name)
+          case 'date':
+            return new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime()
+          case 'size':
+            return b.size - a.size
+          default:
+            return 0
+        }
+      })
+
+      setFilteredFiles(filtered)
     }
 
-    // Apply sorting
-    filtered.sort((a, b) => {
-      switch (sortBy) {
-        case 'name':
-          return a.name.localeCompare(b.name)
-        case 'date':
-          return new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime()
-        case 'size':
-          return b.size - a.size
-        default:
-          return 0
-      }
-    })
+    filterAndSortFiles()
+  }, [files, searchQuery, sortBy])
 
-    setFilteredFiles(filtered)
-  }
+  // ⚡ Performance Optimization:
+  // Memoize `showToast` to make it stable. This allows us to use it in other
+  // `useCallback` hooks without causing them to be recreated on every render.
+  const showToast = useCallback((message: string, type: ToastType) => {
+    setToast({ isVisible: true, message, type })
+  }, [])
 
-  const handleUploadComplete = () => {
+  const handleUploadComplete = useCallback(() => {
     loadFiles()
     loadCourse()
     setIsUploadModalOpen(false)
     showToast('Files uploaded successfully', 'success')
-  }
+  }, [loadFiles, loadCourse, showToast])
 
-  const handleFileSelect = (fileId: string) => {
-    const newSelected = new Set(selectedFiles)
-    if (newSelected.has(fileId)) {
-      newSelected.delete(fileId)
-    } else {
-      newSelected.add(fileId)
-    }
-    setSelectedFiles(newSelected)
-  }
+  // ⚡ Performance Optimization:
+  // Use functional state update for `setSelectedFiles`. This removes the dependency
+  // on `selectedFiles`, making `handleFileSelect` referentially stable.
+  // Combined with `React.memo` on `FileCard`, this prevents re-rendering all
+  // file cards when selecting/deselecting a single file.
+  const handleFileSelect = useCallback((fileId: string) => {
+    setSelectedFiles(prev => {
+      const newSelected = new Set(prev)
+      if (newSelected.has(fileId)) {
+        newSelected.delete(fileId)
+      } else {
+        newSelected.add(fileId)
+      }
+      return newSelected
+    })
+  }, [])
 
   const handleSelectAll = () => {
     if (selectedFiles.size === filteredFiles.length) {
@@ -129,13 +147,15 @@ export default function CoursePage() {
     }
   }
 
-  const handleDownloadFile = (fileId: string) => {
+  // ⚡ Performance Optimization:
+  // Wrapped in `useCallback` to maintain stable reference for `FileCard` prop.
+  const handleDownloadFile = useCallback((fileId: string) => {
     const file = files.find(f => f.id === fileId)
     if (file) {
       showToast(`Downloading ${file.name}`, 'info')
       // In a real implementation, this would trigger an actual download
     }
-  }
+  }, [files, showToast])
 
   const handleDownloadSelected = async () => {
     if (selectedFiles.size === 0) return
@@ -163,12 +183,14 @@ export default function CoursePage() {
     }
   }
 
-  const handleDeleteFile = (fileId: string) => {
+  // ⚡ Performance Optimization:
+  // Wrapped in `useCallback` to maintain stable reference for `FileCard` prop.
+  const handleDeleteFile = useCallback((fileId: string) => {
     deleteFile(fileId)
-    setFiles(files.filter(f => f.id !== fileId))
+    setFiles(prev => prev.filter(f => f.id !== fileId))
     loadCourse()
     showToast('File deleted successfully', 'success')
-  }
+  }, [loadCourse, showToast])
 
   const handleDeleteSelected = () => {
     if (selectedFiles.size === 0) return
@@ -180,10 +202,6 @@ export default function CoursePage() {
       loadCourse()
       showToast(`Deleted ${selectedFiles.size} file(s)`, 'success')
     }
-  }
-
-  const showToast = (message: string, type: ToastType) => {
-    setToast({ isVisible: true, message, type })
   }
 
   if (!course) {
