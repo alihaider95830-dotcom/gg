@@ -1,5 +1,6 @@
 'use client'
 
+import { memo } from 'react'
 import { motion } from 'framer-motion'
 import { FileText, Download, Trash2, Calendar, HardDrive, Cloud } from 'lucide-react'
 import { SlideFile } from '@/types'
@@ -16,7 +17,8 @@ interface FileCardProps {
   onPreview?: (fileId: string) => void
 }
 
-export function FileCard({
+// Memoized to prevent unnecessary re-renders when parent state changes (like selection of other files)
+export const FileCard = memo(function FileCard({
   file,
   isSelected = false,
   onSelect,
@@ -120,4 +122,4 @@ export function FileCard({
       </div>
     </motion.div>
   )
-}
+})
