@@ -1,0 +1,3 @@
+## 2024-05-23 - React Hooks Dependency Ordering
+**Learning:** When refactoring React components to use `useCallback` and `useEffect` with strict dependency arrays, TypeScript's block-scoping (`const`) requires that memoized functions be defined *before* they are used in `useEffect` dependencies. This often forces a specific code organization where effects must reside after helper functions, contrary to the common pattern of placing effects at the top.
+**Action:** When adding `useCallback` to helper functions, proactively move dependent `useEffect` hooks below the function definitions to avoid "variable used before declaration" errors.
