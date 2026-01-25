@@ -1,0 +1,16 @@
+
+> course-slides-manager@1.0.0 dev
+> next dev
+
+  ▲ Next.js 14.2.35
+  - Local:        http://localhost:3000
+
+ ✓ Starting...
+ ✓ Ready in 2.3s
+ ○ Compiling / ...
+ ✓ Compiled / in 10.6s (1282 modules)
+ GET / 200 in 11789ms
+ ✓ Compiled in 1147ms (648 modules)
+ ○ Compiling /course/[id] ...
+ ✓ Compiled /course/[id] in 11.6s (1652 modules)
+ GET /course/1 200 in 14098ms
