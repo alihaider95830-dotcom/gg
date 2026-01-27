@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import {
@@ -35,7 +35,6 @@ export default function CoursePage() {
 
   const [course, setCourse] = useState<Course | null>(null)
   const [files, setFiles] = useState<SlideFile[]>([])
-  const [filteredFiles, setFilteredFiles] = useState<SlideFile[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
@@ -51,33 +50,33 @@ export default function CoursePage() {
     type: 'info',
   })
 
-  useEffect(() => {
-    loadCourse()
-    loadFiles()
-  }, [courseId])
-
-  useEffect(() => {
-    filterAndSortFiles()
-  }, [files, searchQuery, sortBy])
-
-  const loadCourse = () => {
+  const loadCourse = useCallback(() => {
     const courses = getCourses()
     const foundCourse = courses.find(c => c.id === courseId)
     if (foundCourse) {
       setCourse(foundCourse)
     }
-  }
+  }, [courseId])
 
-  const loadFiles = () => {
+  const loadFiles = useCallback(() => {
     setIsLoading(true)
     setTimeout(() => {
       const courseFiles = getFilesByCourse(courseId)
       setFiles(courseFiles)
       setIsLoading(false)
     }, 500)
-  }
+  }, [courseId])
 
-  const filterAndSortFiles = () => {
+  useEffect(() => {
+    loadCourse()
+    loadFiles()
+  }, [loadCourse, loadFiles])
+
+  const showToast = useCallback((message: string, type: ToastType) => {
+    setToast({ isVisible: true, message, type })
+  }, [])
+
+  const filteredFiles = useMemo(() => {
     let filtered = [...files]
 
     // Apply search filter
@@ -101,8 +100,8 @@ export default function CoursePage() {
       }
     })
 
-    setFilteredFiles(filtered)
-  }
+    return filtered
+  }, [files, searchQuery, sortBy])
 
   const handleUploadComplete = () => {
     loadFiles()
@@ -111,15 +110,17 @@ export default function CoursePage() {
     showToast('Files uploaded successfully', 'success')
   }
 
-  const handleFileSelect = (fileId: string) => {
-    const newSelected = new Set(selectedFiles)
-    if (newSelected.has(fileId)) {
-      newSelected.delete(fileId)
-    } else {
-      newSelected.add(fileId)
-    }
-    setSelectedFiles(newSelected)
-  }
+  const handleFileSelect = useCallback((fileId: string) => {
+    setSelectedFiles(prevSelected => {
+      const newSelected = new Set(prevSelected)
+      if (newSelected.has(fileId)) {
+        newSelected.delete(fileId)
+      } else {
+        newSelected.add(fileId)
+      }
+      return newSelected
+    })
+  }, [])
 
   const handleSelectAll = () => {
     if (selectedFiles.size === filteredFiles.length) {
@@ -129,13 +130,13 @@ export default function CoursePage() {
     }
   }
 
-  const handleDownloadFile = (fileId: string) => {
+  const handleDownloadFile = useCallback((fileId: string) => {
     const file = files.find(f => f.id === fileId)
     if (file) {
       showToast(`Downloading ${file.name}`, 'info')
       // In a real implementation, this would trigger an actual download
     }
-  }
+  }, [files, showToast])
 
   const handleDownloadSelected = async () => {
     if (selectedFiles.size === 0) return
@@ -163,12 +164,12 @@ export default function CoursePage() {
     }
   }
 
-  const handleDeleteFile = (fileId: string) => {
+  const handleDeleteFile = useCallback((fileId: string) => {
     deleteFile(fileId)
-    setFiles(files.filter(f => f.id !== fileId))
+    setFiles(prev => prev.filter(f => f.id !== fileId))
     loadCourse()
     showToast('File deleted successfully', 'success')
-  }
+  }, [loadCourse, showToast])
 
   const handleDeleteSelected = () => {
     if (selectedFiles.size === 0) return
@@ -180,10 +181,6 @@ export default function CoursePage() {
       loadCourse()
       showToast(`Deleted ${selectedFiles.size} file(s)`, 'success')
     }
-  }
-
-  const showToast = (message: string, type: ToastType) => {
-    setToast({ isVisible: true, message, type })
   }
 
   if (!course) {
