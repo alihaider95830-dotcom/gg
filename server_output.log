@@ -1,0 +1,335 @@
+
+> course-slides-manager@1.0.0 dev
+> next dev
+
+  ▲ Next.js 14.2.35
+  - Local:        http://localhost:3000
+
+ ✓ Starting...
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+ ✓ Ready in 1703ms
+ ○ Compiling / ...
+ ✓ Compiled / in 7.8s (1282 modules)
+ GET / 200 in 8734ms
+ ✓ Compiled in 949ms (648 modules)
+ GET / 200 in 135ms
+ ○ Compiling /course/[id] ...
+ ✓ Compiled /course/[id] in 6.3s (1652 modules)
+ ✓ Compiled in 628ms (1666 modules)
+ ⨯ ./app/course/[id]/page.tsx
+Error:
+  [31mx[0m the name `showToast` is defined multiple times
+     ,-[[36;1;4m/app/app/course/[id]/page.tsx[0m:51:1]
+ [2m 51[0m |     type: 'info',
+ [2m 52[0m |   })
+ [2m 53[0m |
+ [2m 54[0m |   const showToast = useCallback((message: string, type: ToastType) => {
+     : [31;1m        ^^^^|^^^^[0m
+     :             [31;1m`-- [31;1mprevious definition of `showToast` here[0m[0m
+ [2m 55[0m |     setToast({ isVisible: true, message, type })
+ [2m 56[0m |   }, [])
+ [2m 57[0m |
+ [2m 58[0m |   const loadCourse = useCallback(() => {
+ [2m 59[0m |     const courses = getCourses()
+ [2m 60[0m |     const foundCourse = courses.find(c => c.id === courseId)
+ [2m 61[0m |     if (foundCourse) {
+ [2m 62[0m |       setCourse(foundCourse)
+ [2m 63[0m |     }
+ [2m 64[0m |   }, [courseId])
+ [2m 65[0m |
+ [2m 66[0m |   const loadFiles = useCallback(() => {
+ [2m 67[0m |     setIsLoading(true)
+ [2m 68[0m |     setTimeout(() => {
+ [2m 69[0m |       const courseFiles = getFilesByCourse(courseId)
+ [2m 70[0m |       setFiles(courseFiles)
+ [2m 71[0m |       setIsLoading(false)
+ [2m 72[0m |     }, 500)
+ [2m 73[0m |   }, [courseId])
+ [2m 74[0m |
+ [2m 75[0m |   useEffect(() => {
+ [2m 76[0m |     loadCourse()
+ [2m 77[0m |     loadFiles()
+ [2m 78[0m |   }, [loadCourse, loadFiles])
+ [2m 79[0m |
+ [2m 80[0m |   useEffect(() => {
+ [2m 81[0m |     filterAndSortFiles()
+ [2m 82[0m |   }, [files, searchQuery, sortBy])
+ [2m 83[0m |
+ [2m 84[0m |   const filterAndSortFiles = () => {
+ [2m 85[0m |     let filtered = [...files]
+ [2m 86[0m |
+ [2m 87[0m |     // Apply search filter
+ [2m 88[0m |     if (searchQuery) {
+ [2m 89[0m |       filtered = filtered.filter(file =>
+ [2m 90[0m |         file.name.toLowerCase().includes(searchQuery.toLowerCase())
+ [2m 91[0m |       )
+ [2m 92[0m |     }
+ [2m 93[0m |
+ [2m 94[0m |     // Apply sorting
+ [2m 95[0m |     filtered.sort((a, b) => {
+ [2m 96[0m |       switch (sortBy) {
+ [2m 97[0m |         case 'name':
+ [2m 98[0m |           return a.name.localeCompare(b.name)
+ [2m 99[0m |         case 'date':
+ [2m100[0m |           return new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime()
+ [2m101[0m |         case 'size':
+ [2m102[0m |           return b.size - a.size
+ [2m103[0m |         default:
+ [2m104[0m |           return 0
+ [2m105[0m |       }
+ [2m106[0m |     })
+ [2m107[0m |
+ [2m108[0m |     setFilteredFiles(filtered)
+ [2m109[0m |   }
+ [2m110[0m |
+ [2m111[0m |   const handleUploadComplete = () => {
+ [2m112[0m |     loadFiles()
+ [2m113[0m |     loadCourse()
+ [2m114[0m |     setIsUploadModalOpen(false)
+ [2m115[0m |     showToast('Files uploaded successfully', 'success')
+ [2m116[0m |   }
+ [2m117[0m |
+ [2m118[0m |   const handleFileSelect = (fileId: string) => {
+ [2m119[0m |     const newSelected = new Set(selectedFiles)
+ [2m120[0m |     if (newSelected.has(fileId)) {
+ [2m121[0m |       newSelected.delete(fileId)
+ [2m122[0m |     } else {
+ [2m123[0m |       newSelected.add(fileId)
+ [2m124[0m |     }
+ [2m125[0m |     setSelectedFiles(newSelected)
+ [2m126[0m |   }
+ [2m127[0m |
+ [2m128[0m |   const handleSelectAll = () => {
+ [2m129[0m |     if (selectedFiles.size === filteredFiles.length) {
+ [2m130[0m |       setSelectedFiles(new Set())
+ [2m131[0m |     } else {
+ [2m132[0m |       setSelectedFiles(new Set(filteredFiles.map(f => f.id)))
+ [2m133[0m |     }
+ [2m134[0m |   }
+ [2m135[0m |
+ [2m136[0m |   const handleDownloadFile = (fileId: string) => {
+ [2m137[0m |     const file = files.find(f => f.id === fileId)
+ [2m138[0m |     if (file) {
+ [2m139[0m |       showToast(`Downloading ${file.name}`, 'info')
+ [2m140[0m |       // In a real implementation, this would trigger an actual download
+ [2m141[0m |     }
+ [2m142[0m |   }
+ [2m143[0m |
+ [2m144[0m |   const handleDownloadSelected = async () => {
+ [2m145[0m |     if (selectedFiles.size === 0) return
+ [2m146[0m |
+ [2m147[0m |     const selectedFilesList = files.filter(f => selectedFiles.has(f.id))
+ [2m148[0m |
+ [2m149[0m |     if (selectedFiles.size === 1) {
+ [2m150[0m |       handleDownloadFile(selectedFilesList[0].id)
+ [2m151[0m |     } else {
+ [2m152[0m |       // Create ZIP for multiple files
+ [2m153[0m |       const zip = new JSZip()
+ [2m154[0m |       selectedFilesList.forEach(file => {
+ [2m155[0m |         // In real implementation, add actual file content
+ [2m156[0m |         zip.file(file.name, 'File content placeholder')
+ [2m157[0m |       })
+ [2m158[0m |
+ [2m159[0m |       const content = await zip.generateAsync({ type: 'blob' })
+ [2m160[0m |       const url = URL.createObjectURL(content)
+ [2m161[0m |       const a = document.createElement('a')
+ [2m162[0m |       a.href = url
+ [2m163[0m |       a.download = `${course?.name || 'files'}.zip`
+ [2m164[0m |       a.click()
+ [2m165[0m |
+ [2m166[0m |       showToast(`Downloaded ${selectedFiles.size} files`, 'success')
+ [2m167[0m |     }
+ [2m168[0m |   }
+ [2m169[0m |
+ [2m170[0m |   const handleDeleteFile = (fileId: string) => {
+ [2m171[0m |     deleteFile(fileId)
+ [2m172[0m |     setFiles(files.filter(f => f.id !== fileId))
+ [2m173[0m |     loadCourse()
+ [2m174[0m |     showToast('File deleted successfully', 'success')
+ [2m175[0m |   }
+ [2m176[0m |
+ [2m177[0m |   const handleDeleteSelected = () => {
+ [2m178[0m |     if (selectedFiles.size === 0) return
+ [2m179[0m |
+ [2m180[0m |     if (confirm(`Delete ${selectedFiles.size} file(s)?`)) {
+ [2m181[0m |       deleteMultipleFiles(Array.from(selectedFiles))
+ [2m182[0m |       setFiles(files.filter(f => !selectedFiles.has(f.id)))
+ [2m183[0m |       setSelectedFiles(new Set())
+ [2m184[0m |       loadCourse()
+ [2m185[0m |       showToast(`Deleted ${selectedFiles.size} file(s)`, 'success')
+ [2m186[0m |     }
+ [2m187[0m |   }
+ [2m188[0m |
+ [2m189[0m |   const showToast = (message: string, type: ToastType) => {
+     : [33;1m        ^^^^|^^^^[0m
+     :             [33;1m`-- [33;1m`showToast` redefined here[0m[0m
+ [2m190[0m |     setToast({ isVisible: true, message, type })
+ [2m191[0m |   }
+     `----
+
+Import trace for requested module:
+./app/course/[id]/page.tsx
+ ⨯ ./app/course/[id]/page.tsx
+Error:
+  [31mx[0m the name `showToast` is defined multiple times
+     ,-[[36;1;4m/app/app/course/[id]/page.tsx[0m:51:1]
+ [2m 51[0m |     type: 'info',
+ [2m 52[0m |   })
+ [2m 53[0m |
+ [2m 54[0m |   const showToast = useCallback((message: string, type: ToastType) => {
+     : [31;1m        ^^^^|^^^^[0m
+     :             [31;1m`-- [31;1mprevious definition of `showToast` here[0m[0m
+ [2m 55[0m |     setToast({ isVisible: true, message, type })
+ [2m 56[0m |   }, [])
+ [2m 57[0m |
+ [2m 58[0m |   const loadCourse = useCallback(() => {
+ [2m 59[0m |     const courses = getCourses()
+ [2m 60[0m |     const foundCourse = courses.find(c => c.id === courseId)
+ [2m 61[0m |     if (foundCourse) {
+ [2m 62[0m |       setCourse(foundCourse)
+ [2m 63[0m |     }
+ [2m 64[0m |   }, [courseId])
+ [2m 65[0m |
+ [2m 66[0m |   const loadFiles = useCallback(() => {
+ [2m 67[0m |     setIsLoading(true)
+ [2m 68[0m |     setTimeout(() => {
+ [2m 69[0m |       const courseFiles = getFilesByCourse(courseId)
+ [2m 70[0m |       setFiles(courseFiles)
+ [2m 71[0m |       setIsLoading(false)
+ [2m 72[0m |     }, 500)
+ [2m 73[0m |   }, [courseId])
+ [2m 74[0m |
+ [2m 75[0m |   useEffect(() => {
+ [2m 76[0m |     loadCourse()
+ [2m 77[0m |     loadFiles()
+ [2m 78[0m |   }, [loadCourse, loadFiles])
+ [2m 79[0m |
+ [2m 80[0m |   useEffect(() => {
+ [2m 81[0m |     filterAndSortFiles()
+ [2m 82[0m |   }, [files, searchQuery, sortBy])
+ [2m 83[0m |
+ [2m 84[0m |   const filterAndSortFiles = () => {
+ [2m 85[0m |     let filtered = [...files]
+ [2m 86[0m |
+ [2m 87[0m |     // Apply search filter
+ [2m 88[0m |     if (searchQuery) {
+ [2m 89[0m |       filtered = filtered.filter(file =>
+ [2m 90[0m |         file.name.toLowerCase().includes(searchQuery.toLowerCase())
+ [2m 91[0m |       )
+ [2m 92[0m |     }
+ [2m 93[0m |
+ [2m 94[0m |     // Apply sorting
+ [2m 95[0m |     filtered.sort((a, b) => {
+ [2m 96[0m |       switch (sortBy) {
+ [2m 97[0m |         case 'name':
+ [2m 98[0m |           return a.name.localeCompare(b.name)
+ [2m 99[0m |         case 'date':
+ [2m100[0m |           return new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime()
+ [2m101[0m |         case 'size':
+ [2m102[0m |           return b.size - a.size
+ [2m103[0m |         default:
+ [2m104[0m |           return 0
+ [2m105[0m |       }
+ [2m106[0m |     })
+ [2m107[0m |
+ [2m108[0m |     setFilteredFiles(filtered)
+ [2m109[0m |   }
+ [2m110[0m |
+ [2m111[0m |   const handleUploadComplete = () => {
+ [2m112[0m |     loadFiles()
+ [2m113[0m |     loadCourse()
+ [2m114[0m |     setIsUploadModalOpen(false)
+ [2m115[0m |     showToast('Files uploaded successfully', 'success')
+ [2m116[0m |   }
+ [2m117[0m |
+ [2m118[0m |   const handleFileSelect = useCallback((fileId: string) => {
+ [2m119[0m |     setSelectedFiles(prev => {
+ [2m120[0m |       const newSelected = new Set(prev)
+ [2m121[0m |       if (newSelected.has(fileId)) {
+ [2m122[0m |         newSelected.delete(fileId)
+ [2m123[0m |       } else {
+ [2m124[0m |         newSelected.add(fileId)
+ [2m125[0m |       }
+ [2m126[0m |       return newSelected
+ [2m127[0m |     })
+ [2m128[0m |   }, [])
+ [2m129[0m |
+ [2m130[0m |   const handleSelectAll = () => {
+ [2m131[0m |     if (selectedFiles.size === filteredFiles.length) {
+ [2m132[0m |       setSelectedFiles(new Set())
+ [2m133[0m |     } else {
+ [2m134[0m |       setSelectedFiles(new Set(filteredFiles.map(f => f.id)))
+ [2m135[0m |     }
+ [2m136[0m |   }
+ [2m137[0m |
+ [2m138[0m |   const handleDownloadFile = useCallback((fileId: string) => {
+ [2m139[0m |     const file = files.find(f => f.id === fileId)
+ [2m140[0m |     if (file) {
+ [2m141[0m |       showToast(`Downloading ${file.name}`, 'info')
+ [2m142[0m |       // In a real implementation, this would trigger an actual download
+ [2m143[0m |     }
+ [2m144[0m |   }, [files, showToast])
+ [2m145[0m |
+ [2m146[0m |   const handleDownloadSelected = async () => {
+ [2m147[0m |     if (selectedFiles.size === 0) return
+ [2m148[0m |
+ [2m149[0m |     const selectedFilesList = files.filter(f => selectedFiles.has(f.id))
+ [2m150[0m |
+ [2m151[0m |     if (selectedFiles.size === 1) {
+ [2m152[0m |       handleDownloadFile(selectedFilesList[0].id)
+ [2m153[0m |     } else {
+ [2m154[0m |       // Create ZIP for multiple files
+ [2m155[0m |       const zip = new JSZip()
+ [2m156[0m |       selectedFilesList.forEach(file => {
+ [2m157[0m |         // In real implementation, add actual file content
+ [2m158[0m |         zip.file(file.name, 'File content placeholder')
+ [2m159[0m |       })
+ [2m160[0m |
+ [2m161[0m |       const content = await zip.generateAsync({ type: 'blob' })
+ [2m162[0m |       const url = URL.createObjectURL(content)
+ [2m163[0m |       const a = document.createElement('a')
+ [2m164[0m |       a.href = url
+ [2m165[0m |       a.download = `${course?.name || 'files'}.zip`
+ [2m166[0m |       a.click()
+ [2m167[0m |
+ [2m168[0m |       showToast(`Downloaded ${selectedFiles.size} files`, 'success')
+ [2m169[0m |     }
+ [2m170[0m |   }
+ [2m171[0m |
+ [2m172[0m |   const handleDeleteFile = (fileId: string) => {
+ [2m173[0m |     deleteFile(fileId)
+ [2m174[0m |     setFiles(files.filter(f => f.id !== fileId))
+ [2m175[0m |     loadCourse()
+ [2m176[0m |     showToast('File deleted successfully', 'success')
+ [2m177[0m |   }
+ [2m178[0m |
+ [2m179[0m |   const handleDeleteSelected = () => {
+ [2m180[0m |     if (selectedFiles.size === 0) return
+ [2m181[0m |
+ [2m182[0m |     if (confirm(`Delete ${selectedFiles.size} file(s)?`)) {
+ [2m183[0m |       deleteMultipleFiles(Array.from(selectedFiles))
+ [2m184[0m |       setFiles(files.filter(f => !selectedFiles.has(f.id)))
+ [2m185[0m |       setSelectedFiles(new Set())
+ [2m186[0m |       loadCourse()
+ [2m187[0m |       showToast(`Deleted ${selectedFiles.size} file(s)`, 'success')
+ [2m188[0m |     }
+ [2m189[0m |   }
+ [2m190[0m |
+ [2m191[0m |   const showToast = (message: string, type: ToastType) => {
+     : [33;1m        ^^^^|^^^^[0m
+     :             [33;1m`-- [33;1m`showToast` redefined here[0m[0m
+ [2m192[0m |     setToast({ isVisible: true, message, type })
+ [2m193[0m |   }
+     `----
+
+Import trace for requested module:
+./app/course/[id]/page.tsx
+ ✓ Compiled in 433ms (743 modules)
+ GET / 200 in 234ms
+ GET / 200 in 30ms
+ ✓ Compiled /course/[id] in 315ms (923 modules)
+ ✓ Compiled in 815ms (1666 modules)
