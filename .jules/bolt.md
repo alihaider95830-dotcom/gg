@@ -1,0 +1,3 @@
+## 2024-05-22 - Stable Callbacks with React.memo
+**Learning:** `React.memo` is only effective if the props passed to the component are referentially stable. In `app/page.tsx`, passing inline arrow functions or unstable callbacks (like `handleDeleteCourse` without `useCallback`) to `CourseCard` caused it to re-render even if the course data hadn't changed.
+**Action:** When optimizing a list of components with `React.memo`, always verify that the callback props are wrapped in `useCallback` and have stable dependencies. Use functional state updates (e.g., `setItems(prev => ...)`) to avoid adding the state variable itself to the dependency array.
