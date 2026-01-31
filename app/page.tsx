@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { Plus, FolderOpen, FileText, HardDrive, TrendingUp } from 'lucide-react'
 import { GlassCard } from '@/components/ui/GlassCard'
@@ -38,24 +38,35 @@ export default function Dashboard() {
     type: 'info',
   })
 
-  useEffect(() => {
-    loadCourses()
-    loadStats()
+  const showToast = useCallback((message: string, type: ToastType) => {
+    setToast({ isVisible: true, message, type })
   }, [])
 
-  const loadCourses = () => {
+  const loadStats = useCallback(() => {
+    const storageStats = getStorageStats()
+    setStats(storageStats)
+  }, [])
+
+  const loadCourses = useCallback(() => {
     setIsLoading(true)
     setTimeout(() => {
       const loadedCourses = getCourses()
       setCourses(loadedCourses)
       setIsLoading(false)
     }, 500)
-  }
+  }, [])
 
-  const loadStats = () => {
-    const storageStats = getStorageStats()
-    setStats(storageStats)
-  }
+  const handleDeleteCourse = useCallback((courseId: string) => {
+    deleteCourse(courseId)
+    setCourses(prev => prev.filter(c => c.id !== courseId))
+    showToast('Course deleted successfully', 'success')
+    loadStats()
+  }, [showToast, loadStats])
+
+  useEffect(() => {
+    loadCourses()
+    loadStats()
+  }, [loadCourses, loadStats])
 
   const handleCreateCourse = () => {
     if (!newCourseName.trim()) {
@@ -85,17 +96,6 @@ export default function Dashboard() {
     setNewCourseDescription('')
     showToast('Course created successfully', 'success')
     loadStats()
-  }
-
-  const handleDeleteCourse = (courseId: string) => {
-    deleteCourse(courseId)
-    setCourses(courses.filter(c => c.id !== courseId))
-    showToast('Course deleted successfully', 'success')
-    loadStats()
-  }
-
-  const showToast = (message: string, type: ToastType) => {
-    setToast({ isVisible: true, message, type })
   }
 
   return (
