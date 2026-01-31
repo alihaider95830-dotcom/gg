@@ -1,5 +1,6 @@
 'use client'
 
+import { memo } from 'react'
 import { motion } from 'framer-motion'
 import { FolderOpen, FileText, HardDrive, Trash2 } from 'lucide-react'
 import { Course } from '@/types'
@@ -11,7 +12,7 @@ interface CourseCardProps {
   onDelete?: (courseId: string) => void
 }
 
-export function CourseCard({ course, onDelete }: CourseCardProps) {
+function CourseCardBase({ course, onDelete }: CourseCardProps) {
   return (
     <motion.div
       className="glass rounded-3xl p-6 hover:scale-105 transition-all duration-300"
@@ -80,3 +81,5 @@ export function CourseCard({ course, onDelete }: CourseCardProps) {
     </motion.div>
   )
 }
+
+export const CourseCard = memo(CourseCardBase)
